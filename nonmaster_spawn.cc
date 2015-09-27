@@ -41,17 +41,20 @@ int main(int argc, char** argv)
         for(int i = 0; i < 5; ++i)
         {
           // Our 'work'.
-          // sleep(1);
+          sleep(1);
           fprintf(stdout, "Hello. %d (thread: %d)\n", i, omp_get_thread_num());
           
           // This would be where a blocking call would be placed. Placed inside 
           // the task, the call would be placed upon the master thread.
           // 'task' gives up the code inside to the general available thread 
           // pool.
+          // Calling this task after the 'work' above guarantees that the 
+          // info generated above will be complete when handled by MPI calls 
+          // inside this task.
           #pragma omp task
           {
             // A blocking call, such as MPI_Allgatherv().
-            sleep(1);
+            // sleep(1);
             fprintf(stdout, "Master. %d (thread: %d)\n", i, 
               omp_get_thread_num());
           }
